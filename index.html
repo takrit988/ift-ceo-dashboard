@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IFT GROUP | CEO Executive Command Center & CMS Suite</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Chart.js for Executive Data Visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- SheetJS for Client-Side Excel Import & Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<!-- EXECUTIVE LOGIN MODAL OVERLAY -->
+<div id="login-modal-overlay" style="position: fixed; inset: 0; background: rgba(3, 17, 30, 0.96); backdrop-filter: blur(12px); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+  <div style="background: var(--bg-card); border: 1px solid var(--border-focus); width: 100%; max-width: 440px; border-radius: var(--radius-lg); padding: 36px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); text-align: center;">
+    <div class="brand-logo" style="margin: 0 auto 16px auto; width: 56px; height: 56px; font-size: 24px;">IFT</div>
+    
+    <!-- Login Header Requested by User (Capital V.0.5) -->
+    <h2 style="font-family: var(--font-serif); font-size: 26px; color: #fff; margin-bottom: 8px; line-height: 1.25;">
+      IFT GROUP<br>
+      <span style="font-size: 20px; font-weight: 600; color: var(--color-mckinsey-blue);">CEO Dashboard (V.0.5)</span>
+    </h2>
+    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">Executive Access Gatekeeper & Role Governance</p>
+
+    <form id="form-login" style="display: flex; flex-direction: column; gap: 16px; text-align: left;">
+      <div>
+        <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Username</label>
+        <input type="text" id="login-username" required placeholder="Enter username..." style="width: 100%; padding: 10px 14px; background: rgba(5,25,41,0.9); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; margin-top: 4px; font-size: 14px;">
+      </div>
+
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Password</label>
+          <a href="#" id="btn-forgot-password" style="font-size: 11px; color: var(--color-mckinsey-blue); text-decoration: none; font-weight: 600;">Forgot Password? (ลืมรหัสผ่าน?)</a>
+        </div>
+        <div style="position: relative; margin-top: 4px;">
+          <input type="password" id="login-password" required placeholder="Enter password..." style="width: 100%; padding: 10px 42px 10px 14px; background: rgba(5,25,41,0.9); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 14px;">
+          <button type="button" id="btn-toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px;" title="Show / Hide Password">
+            👁️
+          </button>
+        </div>
+      </div>
+
+      <div id="login-error-msg" style="display: none; font-size: 12px; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 10px 12px; border-radius: 4px; border: 1px solid rgba(239,68,68,0.3);">
+        ❌ Invalid Username or Password. Please try again.
+      </div>
+
+      <button type="submit" class="btn-toggle active" style="width: 100%; padding: 12px; font-size: 14px; font-weight: 700; background: var(--color-mckinsey-blue); border-color: var(--color-mckinsey-blue); cursor: pointer; margin-top: 8px;">
+        🔑 Sign In to CEO Command Center
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="app-container">
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="brand-header">
+      <div class="brand-logo">IFT</div>
+      <div>
+        <div class="brand-title">IFT GROUP</div>
+        <div class="brand-subtitle" id="i18n-brand-subtitle">CEO Command Center</div>
+      </div>
+    </div>
+
+    <ul class="nav-menu">
+      <li class="nav-item active" data-view="ceo-top-panel">
+        <span class="nav-icon">🎯</span>
+        <span id="i18n-nav-top-panel">CEO Top-Level Panel</span>
+      </li>
+      <li class="nav-item" data-view="group-overview">
+        <span class="nav-icon">📊</span>
+        <span id="i18n-nav-group-overview">Group Performance Table</span>
+      </li>
+      <li class="nav-item" data-view="subsidiary-breakdown">
+        <span class="nav-icon">🏢</span>
+        <span id="i18n-nav-subsidiary">Business Units (5)</span>
+      </li>
+      <li class="nav-item" data-view="ipo-sandbox">
+        <span class="nav-icon">🚀</span>
+        <span id="i18n-nav-ipo-sandbox">3-Yr IPO Sandbox</span>
+      </li>
+      <li class="nav-item" data-view="governance">
+        <span class="nav-icon">🛡️</span>
+        <span id="i18n-nav-governance">Governance & Audit</span>
+      </li>
+      <li class="nav-item" data-view="cms" style="border-top: 1px dashed rgba(255,255,255,0.1); margin-top: 8px; padding-top: 12px;">
+        <span class="nav-icon">📑</span>
+        <span id="i18n-nav-cms">Executive CMS & Governance</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="ipo-badge">
+        <span>●</span> <span id="i18n-ipo-header">IDX IPO Horizon 2028</span>
+      </div>
+      <div class="ipo-status">Target Valuation: Rp 1.5 Trillion</div>
+    </div>
+  </aside>
+
+  <!-- Main Executive Workspace -->
+  <main class="main-content">
+
+    <!-- Top Executive Header Controls -->
+    <header class="top-header">
+      <div>
+        <h1 class="page-title" id="current-view-title">CEO Top-Level Decision Panel</h1>
+        <div class="meta-tags">
+          <span>IFT Group FY 2026 (YTD)</span>
+          <span>•</span>
+          <span class="meta-badge">Data as of 14 May 2026</span>
+          <span>•</span>
+          <span style="color: var(--color-mckinsey-blue); font-weight: 700;">Audit Ready</span>
+        </div>
+      </div>
+
+      <div class="controls-group">
+        <!-- Logged In User Badge & Logout Button -->
+        <div id="user-session-badge" style="display: flex; align-items: center; gap: 8px; font-size: 12px; background: rgba(0,163,224,0.1); border: 1px solid var(--color-mckinsey-blue); padding: 4px 12px; border-radius: 4px;">
+          <span style="color: #fff; font-weight: 700;" id="user-display-name">Guest</span>
+          <button id="btn-logout" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 11px; font-weight: 700; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 8px;">🔒 Logout</button>
+        </div>
+
+        <!-- Bilingual Language Switcher -->
+        <div style="display: flex; gap: 4px; border: 1px solid var(--border-color); padding: 4px; border-radius: var(--radius-sm); background: rgba(0,0,0,0.3);">
+          <button id="btn-lang-en" class="btn-toggle active" style="padding: 6px 12px; font-size: 12px;">English 🇬🇧</button>
+          <button id="btn-lang-id" class="btn-toggle" style="padding: 6px 12px; font-size: 12px;">Indonesia 🇮🇩</button>
+        </div>
+
+        <!-- Target Governance Switcher -->
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; background: rgba(0,163,224,0.06); padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border-color);">
+          <span style="color: var(--text-secondary);" id="i18n-target-baseline-label">Target Baseline:</span>
+          <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 600;">
+            <input type="checkbox" id="target-mode-toggle">
+            <span id="i18n-reported-vs-reconciled">Reported (Rp 67B) vs Reconciled (Rp 71B)</span>
+          </label>
+        </div>
+
+        <!-- Currency Switcher -->
+        <div style="display: flex; gap: 4px;">
+          <button id="btn-currency-idr" class="btn-toggle active">IDR (Rp)</button>
+          <button id="btn-currency-usd" class="btn-toggle">USD ($)</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- VIEW 0: CEO TOP-LEVEL DECISION PANEL -->
+    <div id="view-ceo-top-panel" class="view-section" style="display: flex; flex-direction: column; gap: 28px;">
+
+      <!-- SECTION A: OVERALL GROUP HEALTH STATUS BANNER -->
+      <section style="background: linear-gradient(135deg, rgba(5, 25, 41, 0.95), rgba(10, 37, 64, 0.98)); border: 1px solid var(--border-focus); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-card);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+          <div>
+            <div style="font-size: 11px; font-weight: 800; color: var(--color-mckinsey-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;" id="i18n-group-status-label">
+              IFT GROUP OVERALL STATUS / สถานะรวมของกลุ่ม IFT
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="status-pill near" style="font-size: 14px; padding: 6px 14px;" id="group-overall-status-badge">
+                🟡 HIGH GROWTH, HIGH EXECUTION RISK / เติบโตสูง แต่เสี่ยงติดกับดักการส่งมอบ
+              </span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="text-align: right;">
+              <div style="font-size: 11px; color: var(--text-secondary);">Group Health Index</div>
+              <div style="font-size: 24px; font-weight: 800; color: #f59e0b;" id="group-health-score">72 / 100 (Grade B+)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Health Radar Pillars -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); padding: 14px; border-radius: 6px;">
+            <div style="font-size: 11px; color: var(--text-secondary);">Sales Achievement</div>
+            <div style="font-size: 18px; font-weight: 700; color: #34d399;" id="status-pillar-sales">99.4% (On Track 🟢)</div>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); padding: 14px; border-radius: 6px;">
+            <div style="font-size: 11px; color: var(--text-secondary);">Cash Recognition</div>
+            <div style="font-size: 18px; font-weight: 700; color: #ef4444;" id="status-pillar-cash">5.8% (Critical 🔴)</div>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); padding: 14px; border-radius: 6px;">
+            <div style="font-size: 11px; color: var(--text-secondary);">Subsidiary Balance</div>
+            <div style="font-size: 18px; font-weight: 700; color: #ef4444;" id="status-pillar-sub">3 of 5 Failing (Risk 🔴)</div>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); padding: 14px; border-radius: 6px;">
+            <div style="font-size: 11px; color: var(--text-secondary);">IPO Pre-Audit Readiness</div>
+            <div style="font-size: 18px; font-weight: 700; color: #f59e0b;" id="status-pillar-ipo">78.0% (Phase 2 🟡)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION B: INDEPENDENT vs DEPENDENT VARIABLE MATRIX -->
+      <section class="card-container" style="background: var(--bg-card); border: 1px solid var(--border-focus);">
+        <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+          <div style="font-size: 11px; font-weight: 800; color: var(--color-mckinsey-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
+            ECONOMETRIC STRATEGY ENGINE / สมการตัวแปรต้น & ตัวแปรตาม
+          </div>
+          <h2 style="font-size: 22px; font-weight: 700; color: #fff; font-family: var(--font-serif);">
+            Input Drivers (ตัวแปรต้น) ➔ IPO Outcome (ตัวแปรตาม)
+          </h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 50px 1fr; align-items: center; gap: 20px;" id="variable-matrix-container">
+          
+          <!-- INDEPENDENT VARIABLES (X) -->
+          <div style="background: rgba(5, 25, 41, 0.8); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-md);">
+            <div style="font-size: 12px; font-weight: 800; color: var(--color-mckinsey-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; justify-content: space-between;">
+              <span>X = INDEPENDENT VARIABLES (ตัวแปรต้น)</span>
+              <span style="color: var(--text-secondary);">4 Operational Drivers</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+              <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 4px;">
+                <span><strong>X₁</strong>: PO Invoiced Conversion Rate</span>
+                <strong style="color: #ef4444;" id="var-x1">5.8% (Target 45.0%)</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 4px;">
+                <span><strong>X₂</strong>: Healthy Subsidiaries Count</span>
+                <strong style="color: #ef4444;" id="var-x2">2 / 5 Healthy</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 4px;">
+                <span><strong>X₃</strong>: Days Sales Outstanding (DSO)</span>
+                <strong style="color: #f59e0b;" id="var-x3">92 Days (Target &lt; 60)</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 4px;">
+                <span><strong>X₄</strong>: Recurring Revenue Ratio (ARR %)</span>
+                <strong style="color: #f59e0b;" id="var-x4">38.0% (Target 60.0%)</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- EQUATION ARROW -->
+          <div style="text-align: center; font-size: 28px; color: var(--color-mckinsey-blue); font-weight: 800;">
+            ➔
+          </div>
+
+          <!-- DEPENDENT VARIABLES (Y) -->
+          <div style="background: linear-gradient(135deg, rgba(0, 163, 224, 0.12), rgba(5, 25, 41, 0.95)); border: 1px solid var(--color-mckinsey-blue); padding: 20px; border-radius: var(--radius-md);">
+            <div style="font-size: 12px; font-weight: 800; color: var(--color-mckinsey-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; justify-content: space-between;">
+              <span>Y = DEPENDENT VARIABLES (ตัวแปรตาม)</span>
+              <span style="color: #34d399;">Projected IPO Results</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+              <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 4px;">
+                <span><strong>Y₁</strong>: Audit Recognized Sales</span>
+                <strong style="color: #ef4444;" id="var-y1">Rp 4.11B (5.8%)</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 4px;">
+                <span><strong>Y₂</strong>: Rule of 40 Efficiency</span>
+                <strong style="color: #f59e0b;" id="var-y2">42.5% Score</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 4px; border: 1px solid var(--color-mckinsey-blue);">
+                <span><strong>Y₃</strong>: Projected 2028 Market Cap</span>
+                <strong style="color: #fff; font-size: 15px;" id="var-y3">Rp 1,500 Billion</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECTION C: Executive Summary & Hero Filters -->
+      <section style="background: linear-gradient(135deg, rgba(0, 163, 224, 0.08), rgba(10, 37, 64, 0.98)); border: 1px solid var(--border-focus); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-card);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
+          <div>
+            <div style="font-size: 11px; font-weight: 800; color: var(--color-mckinsey-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;" id="i18n-summary-title">
+              CEO EXECUTIVE SUMMARY & DIAGNOSTIC RADAR
+            </div>
+            <h2 style="font-size: 24px; font-weight: 700; color: #fff; font-family: var(--font-serif);" id="i18n-summary-sub">4 Critical Levers to Fix Before IPO Filing</h2>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <div style="text-align: right; background: rgba(5, 25, 41, 0.8); padding: 8px 16px; border-radius: 4px; border: 1px solid var(--border-color);">
+              <div style="font-size: 11px; color: var(--text-secondary);">Overall Group Sales</div>
+              <div style="font-size: 18px; font-weight: 800; color: var(--color-mckinsey-blue);" id="top-panel-sales-val">Rp 70.55B (99.4%)</div>
+            </div>
+            <div style="text-align: right; background: rgba(5, 25, 41, 0.8); padding: 8px 16px; border-radius: 4px; border: 1px solid var(--border-color);">
+              <div style="font-size: 11px; color: var(--text-secondary);">Action Progress</div>
+              <div style="font-size: 18px; font-weight: 800; color: #34d399;" id="action-progress-val">0 / 11 Done (0%)</div>
+            </div>
+          </div>
+        </div>
+
+        <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;" id="i18n-summary-desc">
+          While top-line sales reach 99.4% of target (Rp 70.55B), your company currently has 2 Critical Red Flags and 2 High Priority Levers that impact IPO valuation.
+        </p>
+
+        <!-- Interactive Category Filters -->
+        <div style="display: flex; gap: 8px; margin-top: 18px;">
+          <button class="btn-toggle active lever-filter-btn" data-filter="all">All Levers (4)</button>
+          <button class="btn-toggle lever-filter-btn" data-filter="critical">🔴 Critical Fixes (2)</button>
+          <button class="btn-toggle lever-filter-btn" data-filter="financial">🟡 High Priority (2)</button>
+        </div>
+      </section>
+
+      <!-- 4 EXECUTIVE LEVERS CARDS -->
+      <section style="display: flex; flex-direction: column; gap: 20px;" id="levers-container">
+        
+        <!-- LEVER 1 -->
+        <div class="lever-card critical-card lever-item" data-category="critical">
+          <div class="lever-header">
+            <div class="lever-title-group">
+              <span class="lever-badge badge-critical">🔴 LEVER #1: CRITICAL FIX</span>
+              <h3 class="lever-name" id="i18n-lever1-title">PO Execution Trap (PO Confirmed → Invoiced Conversion)</h3>
+            </div>
+            <div class="lever-metrics">
+              <div class="metric-box">
+                <span class="metric-label" id="i18n-lever1-cur-label">Current Number</span>
+                <span class="metric-val text-danger" id="lever1-current">5.8% Invoiced (Rp 4.11B)</span>
+              </div>
+              <div class="metric-arrow">➔</div>
+              <div class="metric-box">
+                <span class="metric-label" id="i18n-lever1-tar-label">Required Target</span>
+                <span class="metric-val text-success">≥ 45.0% Invoiced (Rp 31.7B)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lever-body">
+            <div class="valuation-impact" id="i18n-lever1-impact">
+              ⚠️ Why this breaks your IPO: Rp 66.44B (94.2%) is trapped in PO Confirmed stage. Un-invoiced revenue is excluded under PSAK 72 audit standards.
+            </div>
+
+            <div class="action-plan-box">
+              <div class="action-plan-title" id="i18n-lever1-steps-title">🎯 EXACT STEPS TO IMPROVE THIS NUMBER (CEO DIRECTIVES):</div>
+              <ul class="action-steps-list">
+                <li>
+                  <input type="checkbox" class="ceo-action-checkbox" data-lever="l1" data-step="1" style="accent-color: var(--color-mckinsey-blue); width: 18px; height: 18px; cursor: pointer;">
+                  <span id="i18n-lever1-step1">Form Weekly Delivery-to-Billing Taskforce: Assign COO & CFO to clear milestone blockages in GiT and STS.</span>
+                </li>
+                <li>
+                  <input type="checkbox" class="ceo-action-checkbox" data-lever="l1" data-step="2" style="accent-color: var(--color-mckinsey-blue); width: 18px; height: 18px; cursor: pointer;">
+                  <span id="i18n-lever1-step2">Institute 5-Day Milestone Signoff SLA: Enforce strict contractual SLAs with Enterprise clients.</span>
+                </li>
+                <li>
+                  <input type="checkbox" class="ceo-action-checkbox" data-lever="l1" data-step="3" style="accent-color: var(--color-mckinsey-blue); width: 18px; height: 18px; cursor: pointer;">
+                  <span id="i18n-lever1-step3">Align PM Compensation: Tie Project Manager bonuses to Invoiced Cash Collection rather than contract signing.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEVER 2 -->
+        <div class="lever-card critical-card lever-item" data-category="critical">
+          <div class="lever-header">
+            <div class="lever-title-group">
+              <span class="lever-badge badge-critical">🔴 LEVER #2: CRITICAL FIX</span>
+              <h3 class="lever-name" id="i18n-lever2-title">Subsidiary Performance & Concentration Risk</h3>
+            </div>
+            <div class="lever-metrics">
+              <div class="metric-box">
+                <span class="metric-label">Current Number</span>
+                <span class="metric-val text-danger">3 of 5 BUs Failing (&lt; 50%)</span>
+              </div>
+              <div class="metric-arrow">➔</div>
+              <div class="metric-box">
+                <span class="metric-label">Required Target</span>
+                <span class="metric-val text-success">0 BUs Failing (&ge; 80%)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lever-body">
+            <div class="valuation-impact" id="i18n-lever2-impact">
+              ⚠️ Why this breaks your IPO: GiT (195.2%) and STS (153.3%) generate 83% of revenue, masking severe drops in IFT (13.7%), DCT (24.2%), and ONE (47.6%).
+            </div>
+
+            <div class="action-plan-box">
+              <div class="action-plan-title">🎯 EXACT STEPS TO IMPROVE THIS NUMBER (CEO DIRECTIVES):</div>
+              <ul class="action-steps-list">
+                <li>
+                  <input type="checkbox" class="ceo-action-checkbox" data-lever="l2" data-step="1" style="accent-color: var(--color-mckinsey-blue); width: 18px; height: 18px; cursor: pointer;">
+                  <span id="i18n-lever2-step1">Consolidate DCT Group: Merge 5 mini-subsidiaries into 2 core business lines to reduce overhead.</span>
+                </li>
+                <li>
+                  <input type="checkbox" class="ceo-action-checkbox" data-lever="l2" data-step="2" style="accent-color: var(--color-mckinsey-blue); width: 18px; height: 18px; cursor: pointer;">
+                  <span id="i18n-lever2-step2">Parent Cross-Selling: Bundle IFT software into GiT & STS enterprise IT infrastructure deals.</span>
+                </li>
+                <li>
+                  <input type="checkbox" class="ceo-action-checkbox" data-lever="l2" data-step="3" style="accent-color: var(--color-mckinsey-blue); width: 18px; height: 18px; cursor: pointer;">
+                  <span id="i18n-lever2-step3">Reassign Sales Talent: Transfer top enterprise account executives from GiT to turnaround ONE.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEVER 3 -->
+        <div class="lever-card warning-card lever-item" data-category="financial">
+          <div class="lever-header">
+            <div class="lever-title-group">
+              <span class="lever-badge badge-warning">🟡 LEVER #3: HIGH PRIORITY</span>
+              <h3 class="lever-name" id="i18n-lever3-title">Days Sales Outstanding (DSO & Working Capital)</h3>
+            </div>
+            <div class="lever-metrics">
+              <div class="metric-box">
+                <span class="metric-label">Current Number</span>
+                <span class="metric-val text-warning">92 Days</span>
+              </div>
+              <div class="metric-arrow">➔</div>
+              <div class="metric-box">
+                <span class="metric-label">Required Target</span>
+                <span class="metric-val text-success">&lt; 60 Days</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lever-body">
+            <div class="valuation-impact" id="i18n-lever3-impact">
+              ⚠️ Why this impacts valuation: 92-day payment cycles trap cash in accounts receivable, forcing high credit lines.
+            </div>
+
+            <div class="action-plan-box">
+              <div class="action-plan-title">🎯 EXACT STEPS TO IMPROVE THIS NUMBER (CEO DIRECTIVES):</div>
+              <ul class="action-steps-list">
+                <li>
+                  <input type="checkbox" class="ceo-action-checkbox" data-lever="l3" data-step="1" style="accent-color: var(--color-mckinsey-blue); width: 18px; height: 18px; cursor: pointer;">
+                  <span id="i18n-lever3-step1">30% Upfront Contract Deposit Mandate: Mandatory advance payment on contracts > Rp 1.0B.</span>
+                </li>
+                <li>
+                  <input type="checkbox" class="ceo-action-checkbox" data-lever="l3" data-step="2" style="accent-color: var(--color-mckinsey-blue); width: 18px; height: 18px; cursor: pointer;">
+                  <span id="i18n-lever3-step2">Automated AR Escalation Trigger: Day 15 reminder → Day 30 finance hold → Day 45 CEO call.</span>
+                </li>
+                <li>
+                  <input type="checkbox" class="ceo-action-checkbox" data-lever="l3" data-step="3" style="accent-color: var(--color-mckinsey-blue); width: 18px; height: 18px; cursor: pointer;">
+                  <span id="i18n-lever3-step3">2% Early Settlement Discount: Offer 2/15 Net 60 terms to accelerate cash collection.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEVER 4 -->
+        <div class="lever-card warning-card lever-item" data-category="financial">
+          <div class="lever-header">
+            <div class="lever-title-group">
+              <span class="lever-badge badge-warning">🟡 LEVER #4: HIGH PRIORITY</span>
+              <h3 class="lever-name" id="i18n-lever4-title">Recurring Revenue Ratio (ARR % vs One-Off Implementation)</h3>
+            </div>
+            <div class="lever-metrics">
+              <div class="metric-box">
+                <span class="metric-label" id="i18n-lever4-cur-label">Current Number</span>
+                <span class="metric-val text-warning">38.0% ARR</span>
+              </div>
+              <div class="metric-arrow">➔</div>
+              <div class="metric-box">
+                <span class="metric-label" id="i18n-lever4-tar-label">Required Target</span>
+                <span class="metric-val text-success">&ge; 60.0% ARR</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lever-body">
+            <div class="valuation-impact" id="i18n-lever4-impact">
+              ⚠️ Why this impacts valuation: One-off IT projects get valued at 1.5x - 2.5x EV/Sales. SaaS & Managed Services ARR get valued at 5x - 8x EV/Sales.
+            </div>
+
+            <div class="action-plan-box">
+              <div class="action-plan-title">🎯 EXACT STEPS TO IMPROVE THIS NUMBER (CEO DIRECTIVES):</div>
+              <ul class="action-steps-list">
+                <li>
+                  <input type="checkbox" class="ceo-action-checkbox" data-lever="l4" data-step="1" style="accent-color: var(--color-mckinsey-blue); width: 18px; height: 18px; cursor: pointer;">
+                  <span id="i18n-lever4-step1">Mandatory Managed Service Attach Rate: Attach a 15-20% annual SLA maintenance contract to all project deliveries.</span>
+                </li>
+                <li>
+                  <input type="checkbox" class="ceo-action-checkbox" data-lever="l4" data-step="2" style="accent-color: var(--color-mckinsey-blue); width: 18px; height: 18px; cursor: pointer;">
+                  <span id="i18n-lever4-step2">Productize Custom Code: Package reusable backend modules into multi-tenant SaaS products under IFT parent.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- VIEW 1: GROUP OVERVIEW -->
+    <div id="view-group-overview" class="view-section" style="display: none; flex-direction: column; gap: 28px;">
+
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Group Target (FY 2026)</div>
+          <div class="kpi-value" id="kpi-target">Rp 71.00B</div>
+          <div class="kpi-subtext" style="color: var(--text-secondary);">Reconciled BU Target Sum</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Total Achieved (PO + Won)</div>
+          <div class="kpi-value" id="kpi-achieved">Rp 70.55B</div>
+          <div class="kpi-subtext tag-success" id="kpi-gap">+Rp 3.55B</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Achievement % vs Target</div>
+          <div class="kpi-value" id="kpi-achievement-pct" style="color: var(--color-mckinsey-blue);">99.4%</div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="kpi-progress-fill" style="width: 99.4%;"></div>
+          </div>
+          <div class="kpi-subtext" id="kpi-status-tag">NEAR TARGET</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">PO Confirmed (Unrecognized)</div>
+          <div class="kpi-value" id="kpi-po-confirmed" style="color: #f59e0b;">Rp 66.44B</div>
+          <div class="kpi-subtext" style="color: #f59e0b;">94.2% of Achieved Sales</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Closed Won (Invoiced)</div>
+          <div class="kpi-value" id="kpi-closed-won" style="color: var(--color-mckinsey-blue);">Rp 4.11B</div>
+          <div class="kpi-subtext tag-warning" id="kpi-po-conversion-rate">5.8% Invoiced</div>
+        </div>
+
+        <!-- 6th KPI Card: Weighted Pipeline -->
+        <div class="kpi-card">
+          <div class="kpi-label">Weighted Pipeline</div>
+          <div class="kpi-value" id="kpi-weighted-pipeline" style="color: #38bdf8;">Rp 67.53B</div>
+          <div class="kpi-subtext" style="color: #38bdf8;">100.8% Target Coverage</div>
+        </div>
+      </section>
+
+      <!-- Subsidiary Performance Data Table -->
+      <section class="card-container">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+          <h2 class="section-title">🏢 IFT Group Subsidiary & Entity Achievement Matrix</h2>
+          <span style="font-size: 12px; color: var(--text-secondary);">Click ▼ on DCT GROUP to expand 5 subsidiaries</span>
+        </div>
+
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Company / Group</th>
+                <th>Code</th>
+                <th>Target (FY 2026)</th>
+                <th>PO Confirmed</th>
+                <th>Closed Won</th>
+                <th>Total Achieved</th>
+                <th>Achievement %</th>
+                <th>Gap to Target</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="table-subsidiary-body">
+              <!-- Rendered via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Charts Section -->
+      <section class="charts-grid">
+        <div class="card-container">
+          <h2 class="section-title" style="margin-bottom: 16px;">📊 Target vs Achieved by Business Unit</h2>
+          <div class="chart-card">
+            <canvas id="chart-bu-achievement"></canvas>
+          </div>
+        </div>
+
+        <div class="card-container">
+          <h2 class="section-title" style="margin-bottom: 16px;">⏳ Execution Gap: PO Confirmed vs Closed Won</h2>
+          <div class="chart-card">
+            <canvas id="chart-po-execution"></canvas>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- VIEW 2: BUSINESS UNITS BREAKDOWN (INLINE EDITABLE SCORECARDS) -->
+    <div id="view-subsidiary-breakdown" class="view-section" style="display: none; flex-direction: column; gap: 28px;">
+      
+      <!-- Section Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <h2 class="section-title" style="font-size: 24px;">🏢 Business Unit Health Scorecards & Turnaround Directives</h2>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+            Strategic portfolio management across 5 operating BUs (9 legal entities) and Group Holding summary. Click text boxes below to edit directives live.
+          </p>
+        </div>
+        <span style="font-size: 12px; background: rgba(0,163,224,0.1); border: 1px solid var(--color-mckinsey-blue); color: var(--color-mckinsey-blue); padding: 6px 12px; border-radius: 4px; font-weight: 700;">
+          ✏️ Editable Scorecards (3x2 Grid)
+        </span>
+      </div>
+
+      <!-- 6 ENTITY HEALTH SCORECARDS GRID (FULLY INLINE EDITABLE) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        
+        <!-- Box 1: IFT Parent -->
+        <div style="background: var(--bg-card); border: 1px solid #ef4444; border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-card);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:#fff; font-size:16px;">IFT Parent</strong>
+            <span class="status-pill below">13.7% Achieved</span>
+          </div>
+          <p style="font-size:12px; color:var(--text-secondary);">Target: Rp 3.00B | Achieved: Rp 0.41B</p>
+          <div contenteditable="true" onblur="updateScorecardDirective('IFT', this.innerText)" style="margin-top:12px; font-size:12px; background:rgba(239, 68, 68, 0.08); border: 1px dashed rgba(239, 68, 68, 0.5); padding:10px; border-radius:4px; color:#f87171; line-height: 1.4; cursor:text;" title="Click to edit Turnaround Action">
+            <strong>Turnaround Action:</strong> Cross-sell software into GiT & STS Telco/Bank client base.
+          </div>
+        </div>
+
+        <!-- Box 2: DCT Group -->
+        <div style="background: var(--bg-card); border: 1px solid #ef4444; border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-card);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:#fff; font-size:16px;">DCT Group (5 Cos)</strong>
+            <span class="status-pill below">24.2% Achieved</span>
+          </div>
+          <p style="font-size:12px; color:var(--text-secondary);">Target: Rp 19.00B | Achieved: Rp 4.60B</p>
+          <div contenteditable="true" onblur="updateScorecardDirective('DCT', this.innerText)" style="margin-top:12px; font-size:12px; background:rgba(239, 68, 68, 0.08); border: 1px dashed rgba(239, 68, 68, 0.5); padding:10px; border-radius:4px; color:#f87171; line-height: 1.4; cursor:text;" title="Click to edit Turnaround Action">
+            <strong>Turnaround Action:</strong> Merge 5 sub-entities into 2 operating lines to cut Rp 4B overhead.
+          </div>
+        </div>
+
+        <!-- Box 3: GiT -->
+        <div style="background: var(--bg-card); border: 1px solid #34d399; border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-card);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:#fff; font-size:16px;">GiT</strong>
+            <span class="status-pill exceed">195.2% Achieved</span>
+          </div>
+          <p style="font-size:12px; color:var(--text-secondary);">Target: Rp 15.00B | Achieved: Rp 29.27B</p>
+          <div contenteditable="true" onblur="updateScorecardDirective('GIT', this.innerText)" style="margin-top:12px; font-size:12px; background:rgba(16, 185, 129, 0.08); border: 1px dashed rgba(16, 185, 129, 0.5); padding:10px; border-radius:4px; color:#34d399; line-height: 1.4; cursor:text;" title="Click to edit Execution Directive">
+            <strong>Execution Directive:</strong> Convert Rp 29B PO Confirmed into Closed Won Invoices.
+          </div>
+        </div>
+
+        <!-- Box 4: STS -->
+        <div style="background: var(--bg-card); border: 1px solid #34d399; border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-card);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:#fff; font-size:16px;">STS (Solusi Tiga Selaras)</strong>
+            <span class="status-pill exceed">153.3% Achieved</span>
+          </div>
+          <p style="font-size:12px; color:var(--text-secondary);">Target: Rp 19.00B | Achieved: Rp 29.12B</p>
+          <div contenteditable="true" onblur="updateScorecardDirective('STS', this.innerText)" style="margin-top:12px; font-size:12px; background:rgba(16, 185, 129, 0.08); border: 1px dashed rgba(16, 185, 129, 0.5); padding:10px; border-radius:4px; color:#34d399; line-height: 1.4; cursor:text;" title="Click to edit Execution Directive">
+            <strong>Execution Directive:</strong> Attach 20% annual SLA maintenance contract to all deals.
+          </div>
+        </div>
+
+        <!-- Box 5: ONE -->
+        <div style="background: var(--bg-card); border: 1px solid #ef4444; border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-card);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:#fff; font-size:16px;">ONE</strong>
+            <span class="status-pill below">47.6% Achieved</span>
+          </div>
+          <p style="font-size:12px; color:var(--text-secondary);">Target: Rp 15.00B | Achieved: Rp 7.15B</p>
+          <div contenteditable="true" onblur="updateScorecardDirective('ONE', this.innerText)" style="margin-top:12px; font-size:12px; background:rgba(239, 68, 68, 0.08); border: 1px dashed rgba(239, 68, 68, 0.5); padding:10px; border-radius:4px; color:#f87171; line-height: 1.4; cursor:text;" title="Click to edit Turnaround Action">
+            <strong>Turnaround Action:</strong> Transfer top GiT enterprise sales AEs to accelerate ONE cloud pipeline.
+          </div>
+        </div>
+
+        <!-- Box 6: IFT Group Total Portfolio Governance -->
+        <div style="background: linear-gradient(135deg, rgba(0, 163, 224, 0.12), rgba(5, 25, 41, 0.98)); border: 1px solid var(--color-mckinsey-blue); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-card);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="color:#fff; font-size:16px;">IFT Group Total Portfolio</strong>
+            <span class="status-pill near">99.4% Achieved</span>
+          </div>
+          <p style="font-size:12px; color:var(--text-secondary);">Reconciled Target: Rp 71.00B | Total Achieved: Rp 70.55B</p>
+          <div contenteditable="true" onblur="updateScorecardDirective('GROUP', this.innerText)" style="margin-top:12px; font-size:12px; background:rgba(0, 163, 224, 0.1); border: 1px dashed var(--color-mckinsey-blue); padding:10px; border-radius:4px; color:var(--color-mckinsey-blue); line-height: 1.4; cursor:text;" title="Click to edit Group Governance Directive">
+            <strong>Group Governance:</strong> Re-allocate capital from GiT & STS cash flows to subsidize turnaround of IFT, DCT & ONE before IPO filing.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Subsidiary Data Table -->
+      <section class="card-container">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+          <h2 class="section-title">🏢 Detailed Business Unit Financial Matrix</h2>
+          <span style="font-size: 12px; color: var(--text-secondary);">Click ▼ on DCT GROUP to expand 5 subsidiaries</span>
+        </div>
+
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Company / Group</th>
+                <th>Code</th>
+                <th>Target (FY 2026)</th>
+                <th>PO Confirmed</th>
+                <th>Closed Won</th>
+                <th>Total Achieved</th>
+                <th>Achievement %</th>
+                <th>Gap to Target</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="table-subsidiary-body-bu-view">
+              <!-- Rendered via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- VIEW 3: 3-YEAR IPO VALUATION SANDBOX -->
+    <div id="view-ipo-sandbox" class="view-section" style="display: none; flex-direction: column; gap: 28px;">
+      <section class="card-container">
+        <h2 class="section-title" style="margin-bottom: 8px;">🚀 3-Year IPO Valuation Simulator (IDX Tech Board 2028)</h2>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">
+          Adjust revenue growth rate, EBITDA margin, and market valuation multiples to simulate IFT Group's market capitalization upon listing.
+        </p>
+
+        <div class="sandbox-controls">
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Annual Revenue Growth Rate (%):</span>
+              <span id="val-growth" style="color: var(--color-mckinsey-blue); font-weight: 700;">25%</span>
+            </div>
+            <input type="range" id="slider-growth" class="slider-input" min="10" max="60" value="25" step="1">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>EBITDA Margin (%):</span>
+              <span id="val-ebitda" style="color: #34d399; font-weight: 700;">18%</span>
+            </div>
+            <input type="range" id="slider-ebitda" class="slider-input" min="5" max="40" value="18" step="1">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Target EV/EBITDA Multiple:</span>
+              <span id="val-multiple" style="color: var(--color-mckinsey-blue); font-weight: 700;">12x</span>
+            </div>
+            <input type="range" id="slider-multiple" class="slider-input" min="6" max="25" value="12" step="1">
+          </div>
+        </div>
+
+        <div class="valuation-display">
+          <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+            Projected Year 3 Market Capitalization (2028 IPO)
+          </div>
+          <div class="valuation-number" id="estimated-valuation-display">Rp 1,500 Billion</div>
+          <div style="font-size: 13px; color: var(--color-mckinsey-blue); font-weight: 600;">
+            Rule of 40 Score: <span id="val-rule40">43%</span> (Target $\ge$ 40% for Tech IPO)
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- VIEW 4: GOVERNANCE & PSAK 72 -->
+    <div id="view-governance" class="view-section" style="display: none; flex-direction: column; gap: 28px;">
+      <section class="card-container">
+        <h2 class="section-title" style="margin-bottom: 16px;">🛡️ Governance, PSAK 72 & Audit Readiness Matrix</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px;">
+            <div style="font-weight: 700; color: var(--color-mckinsey-blue); margin-bottom: 6px;">PSAK 72 Revenue Audit</div>
+            <div style="font-size: 24px; font-weight: 800; color:#fff;">84.5% Compliant</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Deferred revenue recognized strictly on milestone signoffs.</div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px;">
+            <div style="font-weight: 700; color: var(--color-warning); margin-bottom: 6px;">Days Sales Outstanding (DSO)</div>
+            <div style="font-size: 24px; font-weight: 800; color:#fff;">92 Days</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Target &lt; 60 Days before Big 4 pre-audit filing.</div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px;">
+            <div style="font-weight: 700; color: #34d399; margin-bottom: 6px;">Recurring Revenue Ratio (RRG)</div>
+            <div style="font-size: 24px; font-weight: 800; color:#fff;">38.0%</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Target &gt; 60% ARR to reduce IPO valuation discount.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- VIEW 5: EXECUTIVE CMS & GOVERNANCE SUITE -->
+    <div id="view-cms" class="view-section" style="display: none; flex-direction: column; gap: 28px;">
+
+      <!-- Sub Navigation Bar for CMS Tabs -->
+      <div style="display: flex; gap: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; flex-wrap: wrap;">
+        <button class="btn-toggle active cms-tab-btn" data-cms-tab="tasks">📋 Task Manager & Deadlines</button>
+        <button class="btn-toggle cms-tab-btn" data-cms-tab="quarterly">📅 Quarterly Reports Vault</button>
+        <button class="btn-toggle cms-tab-btn" data-cms-tab="upload">📤 Data & File Import Hub</button>
+        <button class="btn-toggle cms-tab-btn" data-cms-tab="export">💾 Plan Editor & Exports</button>
+      </div>
+
+      <!-- CMS TAB 1: TASK MANAGER & DEADLINES -->
+      <div id="cms-tab-tasks" class="cms-tab-content" style="display: flex; flex-direction: column; gap: 24px;">
+        
+        <!-- Add New Action Directive Form with Quick Add Buttons -->
+        <section class="card-container" style="background: var(--bg-card); border: 1px solid var(--border-focus);">
+          <h2 class="section-title" style="font-size: 18px; margin-bottom: 16px;">➕ Assign New Executive Task / Directives (เพิ่มงาน & ผู้รับผิดชอบ)</h2>
+          <form id="form-add-task" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; align-items: end;">
+            <div>
+              <label style="font-size: 11px; color: var(--text-secondary); font-weight: 700;">STRATEGIC ACTION TITLE</label>
+              <input type="text" id="new-task-title" required placeholder="e.g. Audit Signoff SLA..." style="width:100%; padding:8px 12px; background:rgba(0,0,0,0.4); border:1px solid var(--border-color); color:#fff; border-radius:4px; margin-top:4px;">
+            </div>
+
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <label style="font-size: 11px; color: var(--text-secondary); font-weight: 700;">STRATEGIC LEVER</label>
+                <button type="button" id="btn-quick-add-lever" style="background:none; border:none; color:var(--color-mckinsey-blue); font-size:11px; cursor:pointer; font-weight:700;">➕ Add Lever</button>
+              </div>
+              <select id="new-task-lever" style="width:100%; padding:8px 12px; background:rgba(5,25,41,0.9); border:1px solid var(--border-color); color:#fff; border-radius:4px; margin-top:4px;">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <label style="font-size: 11px; color: var(--text-secondary); font-weight: 700;">EXECUTIVE OWNER (ผู้รับผิดชอบ)</label>
+                <button type="button" id="btn-quick-add-exec" style="background:none; border:none; color:var(--color-mckinsey-blue); font-size:11px; cursor:pointer; font-weight:700;">➕ Add Exec</button>
+              </div>
+              <select id="new-task-owner" style="width:100%; padding:8px 12px; background:rgba(5,25,41,0.9); border:1px solid var(--border-color); color:#fff; border-radius:4px; margin-top:4px;">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size: 11px; color: var(--text-secondary); font-weight: 700;">DEADLINE (กำหนดส่งมอบ)</label>
+              <input type="date" id="new-task-deadline" required style="width:100%; padding:8px 12px; background:rgba(0,0,0,0.4); border:1px solid var(--border-color); color:#fff; border-radius:4px; margin-top:4px;">
+            </div>
+
+            <button type="submit" class="btn-toggle active" style="padding:10px 16px; font-weight:700; height: 38px; cursor:pointer;">
+              ➕ Add Directive
+            </button>
+          </form>
+        </section>
+
+        <!-- Executive Task Directory Table -->
+        <section class="card-container">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2 class="section-title">🎯 Executive Task & Action Directives Tracker</h2>
+            <span style="font-size: 12px; color: var(--text-secondary);" id="cms-task-count-badge">11 Active Directives</span>
+          </div>
+
+          <div class="data-table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Lever</th>
+                  <th>Strategic Directive</th>
+                  <th>Executive Owner (ผู้รับผิดชอบ)</th>
+                  <th>Deadline (วันกำหนดส่ง)</th>
+                  <th>Status</th>
+                  <th>Valuation Impact</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="cms-task-table-body">
+                <!-- Rendered via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- CMS TAB 2: QUARTERLY REPORTS VAULT -->
+      <div id="cms-tab-quarterly" class="cms-tab-content" style="display: none; flex-direction: column; gap: 24px;">
+        
+        <!-- Snapshot Trigger Banner -->
+        <section style="background: linear-gradient(135deg, rgba(0,163,224,0.1), rgba(5,25,41,0.95)); border:1px solid var(--color-mckinsey-blue); border-radius:var(--radius-md); padding:20px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h3 style="font-size:18px; font-weight:700; color:#fff;">📸 Save Current Performance as New Quarterly Snapshot</h3>
+            <p style="font-size:13px; color:var(--text-secondary); margin-top:4px;">
+              Archive current target, achievement, Closed Won invoicing, and health index into historical quarterly vault.
+            </p>
+          </div>
+          <button id="btn-save-quarter-snapshot" class="btn-toggle active" style="padding:10px 20px; font-weight:700; font-size:13px; cursor:pointer;">
+            📌 Save Quarter Snapshot
+          </button>
+        </section>
+
+        <!-- Quarterly Archives Table -->
+        <section class="card-container">
+          <h2 class="section-title" style="margin-bottom:16px;">📅 Quarterly Performance & Audit Readiness Vault</h2>
+          <div class="data-table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Quarter Slot</th>
+                  <th>As Of Date</th>
+                  <th>Target (Rp B)</th>
+                  <th>Achieved (Rp B)</th>
+                  <th>Closed Won (Invoiced)</th>
+                  <th>Group Health Score</th>
+                  <th>Status</th>
+                  <th>Strategic Audit Notes</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="cms-quarterly-table-body">
+                <!-- Rendered via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- CMS TAB 3: DATA & FILE IMPORT HUB -->
+      <div id="cms-tab-upload" class="cms-tab-content" style="display: none; flex-direction: column; gap: 24px;">
+        
+        <!-- Drag and Drop Upload Zone -->
+        <section class="card-container" style="text-align: center; border: 2px dashed var(--color-mckinsey-blue); padding: 40px 20px; background: rgba(0,163,224,0.03);">
+          <div style="font-size: 40px; margin-bottom: 12px;">📤</div>
+          <h3 style="font-size: 20px; font-weight: 700; color: #fff;">Drag & Drop Financial Reports, PDFs, Images or Excel Files</h3>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-top: 6px;">
+            Supports <strong>.xlsx, .csv, .pdf, .png, .jpg</strong> (Auto-extracts revenue numbers from Excel sheets)
+          </p>
+          
+          <input type="file" id="cms-file-input" multiple accept=".xlsx,.csv,.pdf,.png,.jpg,.jpeg" style="display: none;">
+          <button id="btn-browse-files" class="btn-toggle active" style="margin-top: 20px; padding: 10px 24px; font-weight: 700; cursor: pointer;">
+            📁 Browse Files to Upload
+          </button>
+        </section>
+
+        <!-- Uploaded Files Store -->
+        <section class="card-container">
+          <h2 class="section-title" style="margin-bottom: 16px;">📑 Uploaded Document & Supporting Evidence Vault</h2>
+          <div class="data-table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>File Name</th>
+                  <th>File Type</th>
+                  <th>File Size</th>
+                  <th>Upload Date</th>
+                  <th>Uploader</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="cms-files-table-body">
+                <!-- Rendered via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- CMS TAB 4: PLAN EDITOR, EXECUTIVE ROSTER & EXPORT ENGINE -->
+      <div id="cms-tab-export" class="cms-tab-content" style="display: none; flex-direction: column; gap: 24px;">
+        
+        <!-- Target Plan Adjuster -->
+        <section class="card-container">
+          <h2 class="section-title" style="margin-bottom: 16px;">⚙️ Adjust Entity Targets & Financial Plans (ปรับลด/เพิ่มแผน)</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;" id="cms-target-adjuster-grid">
+            <!-- Dynamically generated inputs for IFT, DCT, GiT, STS, ONE -->
+          </div>
+          <button id="btn-save-plan-adjustments" class="btn-toggle active" style="margin-top: 20px; padding: 10px 20px; font-weight: 700; cursor: pointer;">
+            💾 Save Target Adjustments
+          </button>
+        </section>
+
+        <!-- Dynamic Executive Roster & Levers Management Section -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px;">
+          
+          <!-- Executive Roster Manager -->
+          <section class="card-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h2 class="section-title" style="font-size: 18px;">👥 Executive Roster Manager (จัดการผู้รับผิดชอบ)</h2>
+              <button id="btn-add-exec-main" class="btn-toggle active" style="font-size: 11px; padding: 4px 10px; cursor: pointer;">➕ New Executive</button>
+            </div>
+            <div id="cms-executives-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
+              <!-- Rendered via JS -->
+            </div>
+          </section>
+
+          <!-- Levers Directory Manager -->
+          <section class="card-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h2 class="section-title" style="font-size: 18px;">🏷️ Strategic Levers Manager (จัดการ Strategic Levers)</h2>
+              <button id="btn-add-lever-main" class="btn-toggle active" style="font-size: 11px; padding: 4px 10px; cursor: pointer;">➕ New Lever</button>
+            </div>
+            <div id="cms-levers-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
+              <!-- Rendered via JS -->
+            </div>
+          </section>
+
+        </div>
+
+        <!-- 1-Click Executive Export Hub -->
+        <section class="card-container" style="background: linear-gradient(135deg, rgba(5,25,41,0.95), rgba(0,163,224,0.08)); border: 1px solid var(--border-focus);">
+          <h2 class="section-title" style="margin-bottom: 8px;">📥 Executive Board Export & Data Backup Hub</h2>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
+            Export complete financial data packages and board-ready reports in multiple formats.
+          </p>
+
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <button id="btn-export-excel" class="btn-toggle active" style="padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; background: #10b981;">
+              📊 Export Full Excel Package (.xlsx)
+            </button>
+            <button id="btn-export-pdf" class="btn-toggle active" style="padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; background: #00a3e0;">
+              📄 Export Executive Board PDF Report
+            </button>
+            <button id="btn-export-json" class="btn-toggle" style="padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer;">
+              💾 Export JSON Data Backup
+            </button>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<script src="mock_data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

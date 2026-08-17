@@ -1,0 +1,73 @@
+{
+  "timestamp": "2026-08-17 16:14:21",
+  "reconciledGroupTarget": 71.0,
+  "reportedGroupTarget": 67.0,
+  "targetDiscrepancyGap": 4.0,
+  "totalPOConfirmed": 66.36,
+  "totalClosedWon": 3.65,
+  "totalAchieved": 70.01,
+  "poExecutionRatioPct": 5.2,
+  "ruleOf40Score": 42.5,
+  "buBreakdown": [
+    {
+      "code": "DCT",
+      "name": "DCT GROUP (5 Companies)",
+      "target": 19.0,
+      "poConfirmed": 2.447,
+      "closedWon": 1.613,
+      "totalAchieved": 4.059,
+      "achievementPct": 21.4,
+      "gap": -14.94,
+      "status": "BELOW TARGET",
+      "dso": 105
+    },
+    {
+      "code": "GIT",
+      "name": "GiT",
+      "target": 15.0,
+      "poConfirmed": 29.09,
+      "closedWon": 0.18,
+      "totalAchieved": 29.27,
+      "achievementPct": 195.1,
+      "gap": 14.27,
+      "status": "EXCEED TARGET",
+      "dso": 78
+    },
+    {
+      "code": "IFT",
+      "name": "Indonesia Futura Teknologi (Parent)",
+      "target": 3.0,
+      "poConfirmed": 0.411,
+      "closedWon": 0.0,
+      "totalAchieved": 0.411,
+      "achievementPct": 13.7,
+      "gap": -2.59,
+      "status": "BELOW TARGET",
+      "dso": 110
+    },
+    {
+      "code": "ONE",
+      "name": "ONE",
+      "target": 15.0,
+      "poConfirmed": 6.63,
+      "closedWon": 0.52,
+      "totalAchieved": 7.15,
+      "achievementPct": 47.7,
+      "gap": -7.85,
+      "status": "BELOW TARGET",
+      "dso": 98
+    },
+    {
+      "code": "STS",
+      "name": "Solusi Tiga Selaras (STS)",
+      "target": 19.0,
+      "poConfirmed": 27.78,
+      "closedWon": 1.34,
+      "totalAchieved": 29.12,
+      "achievementPct": 153.3,
+      "gap": 10.12,
+      "status": "EXCEED TARGET",
+      "dso": 82
+    }
+  ]
+}
